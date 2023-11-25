@@ -20,6 +20,8 @@ export function activate(extContext: vscode.ExtensionContext) {
 			return handleCodeFlowVisualization(extContext, request, context, progress, token);
 		} else if (request.slashCommand?.name === 'render') {
 			return handleRender(extContext, request, context, progress, token);
+		} else if (request.slashCommand?.name === 'chooseRandomImageFromImagesDir') { // New command
+			return handleRandomImage(extContext, request, context, progress, token);
 		}
 
 		let imageGenPrompt = request.prompt || 'A photo of a bicyclist in Seattle carrying a laptop and writing code while simultaneously riding a bike.';
@@ -68,6 +70,7 @@ Have a great day!`;
 				{ name: 'affirmation', description: 'Sometimes we need a context-aware affirmation from a happy cute animal!' },
 				{ name: 'flow', description: 'Visualize the code flow based for the current code' },
 				{ name: 'render', description: 'Preview the current code as website rendering' },
+				{ name: 'chooseRandomImageFromImagesDir', description: 'Display a random image' },
 			];
 		},
 	};
@@ -168,6 +171,30 @@ async function handleRender(extContext: vscode.ExtensionContext, request: vscode
 
 	return {};
 };
+
+async function handleRandomImage(extContext: vscode.ExtensionContext, request: vscode.ChatAgentRequest, context: vscode.ChatAgentContext, progress: vscode.Progress<vscode.ChatAgentProgress>, token: vscode.CancellationToken): Promise<vscode.ChatAgentResult2> {
+	const { smallFilePath } = await getRandomImage();
+	const content = `[![image](file:///${smallFilePath})](file:///${smallFilePath})`;
+	progress.report({ content });
+
+	return {};
+}
+
+async function getRandomImage(): Promise<{ smallFilePath: string; }> {
+	// Directory where your local images are stored
+	const imagesDirectory = path.join(__dirname, '..', 'images');
+
+	// Read the names of all files in the images directory
+	const files = await fs.promises.readdir(imagesDirectory);
+
+	// Select a random file
+	const randomFile = files[Math.floor(Math.random() * files.length)];
+
+	// Construct the full path of the random file
+	const smallFilePath = path.join(imagesDirectory, randomFile);
+
+	return { smallFilePath };
+}
 
 async function getAiImage(extContext: vscode.ExtensionContext, imageGenPrompt: string): Promise<{ smallFilePath: string; resultUrl: string; }> {
 	const azureEndpoint = getAzureEndpoint();
