@@ -1,8 +1,8 @@
 {
-  "name": "chat-agent-dalle",
-  "publisher": "roblourens",
-  "displayName": "chat-agent-dalle",
-  "description": "",
+  "name": "copilot-agent-dalle",
+  "publisher": "wladefant",
+  "displayName": "GitHub Copilot Chat Agent",
+  "description": "A chat agent powered by Dall-E and integrated into GitHub Copilot Chat",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.84.0"
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/roblourens/chat-agent-dalle"
+    "url": "https://github.com/Wladefant/copilot-agent-dalle"
   },
   "enabledApiProposals": [
     "chatAgents2",
